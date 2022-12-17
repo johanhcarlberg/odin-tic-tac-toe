@@ -10,8 +10,8 @@ const gameBoardModule = (() => {
     }
 
     function render() {
+        _gameBoardContainer.replaceChildren();
         for (let index in _gameBoard) {
-            console.log(_gameBoard[index]);
             const item = _gameBoard[index];
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('game-board-item')
@@ -26,3 +26,10 @@ const gameBoardModule = (() => {
         getGameBoard,
     }
 })();
+
+const playerFactory = (symbol) => {
+    return { symbol }
+}
+
+const player1 = playerFactory('X');
+const player2 = playerFactory('O');
