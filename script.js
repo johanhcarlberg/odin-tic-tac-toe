@@ -4,9 +4,15 @@ const gameBoardModule = (() => {
         '', 'X', '',
         '', '', ''
     ];
+    const _gameBoardContainer = document.querySelector("#game-board-container");
     function getGameBoard() {
         return _gameBoard;
     }
+
+    function render() {
+
+    }
+
     return {
         getGameBoard,
     }
