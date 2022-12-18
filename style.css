@@ -25,3 +25,36 @@ body {
     font-size: 6rem;
     user-select: none;
 }
+
+.player-controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    background-color: #ddd;
+    border: 1px solid #444;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}
+
+.player-controls .player {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    font-size: 13px;
+    margin: 0;
+    padding: 20px;
+    align-items: center;
+}
+
+.player input {
+    padding: 5px;
+}
+
+.player-controls .actions {
+    grid-column: 1 / span 2;
+    display: grid;
+    justify-items: center;
+}
+
+.player-controls .actions button {
+    padding: 8px 30px;
+}
