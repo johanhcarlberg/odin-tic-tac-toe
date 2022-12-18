@@ -97,7 +97,16 @@ const game = (() => {
     })();
 
     const playerFactory = (id, symbol) => {
-        return { id, symbol }
+        const playerInput = document.querySelector(`#player${id}`);
+        let _name = playerInput.value;
+        playerInput.addEventListener('focusout', e => {
+            _name = e.target.value
+        });
+
+        function getName() {
+            return _name;
+        }
+        return { id, symbol, getName }
     }
 
     const _player1 = playerFactory(1, 'X');
@@ -116,7 +125,7 @@ const game = (() => {
         }
         gameBoardModule.setGameBoardItemAtIndex(gameBoardIndex, _currentPlayer.symbol);
         if (checkWinState()) {
-            console.log(`Player ${_currentPlayer.id} wins!`)
+            console.log(`Player ${_currentPlayer.getName()} wins!`)
             _isGameOver = true;
         }
         _currentPlayer === _player1 ? _currentPlayer = _player2 : _currentPlayer = _player1;
