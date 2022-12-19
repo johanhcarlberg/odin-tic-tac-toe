@@ -164,7 +164,7 @@ const game = (() => {
 
     function checkWinState() {
         const _gameBoard = gameBoardModule.getGameBoard();
-        if (checkRows(_gameBoard) || checkCols(_gameBoard)) {
+        if (checkRows(_gameBoard) || checkCols(_gameBoard) || checkDiagonals(_gameBoard)) {
             return true;
         } else {
             return false;
@@ -185,7 +185,6 @@ const game = (() => {
                 }
             }
             if (colMatches === 3) {
-                console.log(`player with symbol ${colSymbol} wins (cols)`);   
                 return true;
             }
         }
@@ -206,11 +205,40 @@ const game = (() => {
                 }
             }
             if (rowMatches === 3) {
-                console.log(`player with symbol ${rowSymbol} wins (rows)`);   
                 return true;
             }
         }
         return false;
+    }
+
+    function checkDiagonals(_gameBoard) {
+        let diag1Matches = 0;
+        let diag1Symbol = _gameBoard[0];
+        if (diag1Symbol !== '') {
+            for (let i = 0; i < 3; i++) {
+                let item = _gameBoard[i * 3 + i]
+                if (item === diag1Symbol) {
+                    diag1Matches++;
+                }
+            }
+        }
+        let diag2Matches = 0;
+        let diag2Symbol = _gameBoard[2];
+        if (diag2Symbol !== '') {
+            for (let i = 0; i < 3; i++) {
+                let item = _gameBoard[2 * i + 2];
+                if (item === diag2Symbol) {
+                    diag2Matches++;
+                }
+            }
+        }
+
+        if (diag1Matches === 3 || diag2Matches === 3) {
+            return true;
+        }
+
+        return false;
+
     }
 
     function checkBoardIsFull(_gameBoard) {
