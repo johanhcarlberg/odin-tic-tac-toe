@@ -53,7 +53,6 @@ const game = (() => {
         function setGameBoardItemAtIndex(index, symbol) {
             _gameBoard[index] = symbol;
             pubSub.emit('gameBoardChanged', _gameBoard);
-            //render();
         }
 
         return {
@@ -65,6 +64,7 @@ const game = (() => {
 
     const displayModule = (() => {
         pubSub.subscribe('gameBoardChanged', render);
+
         const _gameBoardContainer = document.querySelector("#game-board-container");
 
         function getGameBoardIndexFromTarget(target) {
@@ -72,7 +72,6 @@ const game = (() => {
         }
 
         function render(gameBoard) {
-            console.log('rendering');
             console.log(gameBoard);
 
             _gameBoardContainer.replaceChildren();
@@ -118,8 +117,25 @@ const game = (() => {
         gameOver: 'gameOver',
     }
     let _currentPlayer = _player1;
-    console.log(_gameStates);
     let _currGameState = _gameStates.gameStart;
+    
+    const gameOverDisplay = document.querySelector('.game-over-display');
+    pubSub.subscribe('gameOver', (winner) => {
+        const title = gameOverDisplay.querySelector('h2');
+        if (winner) {
+            title.textContent = `${winner.getName()} wins!`
+        } else {
+            title.textContent = "It's a draw!";
+        }
+        gameOverDisplay.style.display = 'grid';
+    })
+    const gameOverRestartButton = gameOverDisplay.querySelector('button');
+    gameOverRestartButton.addEventListener('click', () => {
+        gameOverDisplay.style.display = '';
+        onStartButtonClick();
+    })
+
+
     const playerControls = document.querySelector('.player-controls');
     const startButton = playerControls.querySelector('button');
     startButton.addEventListener('click', onStartButtonClick);
@@ -136,7 +152,6 @@ const game = (() => {
     }
 
     function takeTurn(gameBoardIndex) {
-        console.log(_currGameState)
         if (_currGameState !== _gameStates.gameRunning) {
             return;
         }
@@ -150,13 +165,11 @@ const game = (() => {
         if (checkWinState()) {
             console.log(`Player ${_currentPlayer.getName()} wins!`)
             _currGameState = _gameStates.gameOver;
-            pubSub.emit('gameStateChanged', _currGameState);
-        }
-
-        if (checkBoardIsFull(gameBoardModule.getGameBoard())) {
+            pubSub.emit('gameOver', _currentPlayer);
+        } else if (checkBoardIsFull(gameBoardModule.getGameBoard())) {
             console.log("It's a draw!");
             _currGameState = _gameStates.gameOver;
-            pubSub.emit('gameStateChanged', _currGameState);
+            pubSub.emit('gameOver');
         }
         _currentPlayer === _player1 ? _currentPlayer = _player2 : _currentPlayer = _player1;
     }
