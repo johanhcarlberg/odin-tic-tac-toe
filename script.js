@@ -106,16 +106,38 @@ const game = (() => {
         function getName() {
             return _name;
         }
+
         return { id, symbol, getName }
     }
 
     const _player1 = playerFactory(1, 'X');
     const _player2 = playerFactory(2, 'O');
+    const _gameStates = {
+        gameStart: 'gameStart',
+        gameRunning: 'gameRunning',
+        gameOver: 'gameOver',
+    }
     let _currentPlayer = _player1;
-    let _isGameOver = false;
+    console.log(_gameStates);
+    let _currGameState = _gameStates.gameStart;
+    const playerControls = document.querySelector('.player-controls');
+    const startButton = playerControls.querySelector('button');
+    startButton.addEventListener('click', onStartButtonClick);
+    pubSub.subscribe('gameStateChanged', (gameState) => {
+        _currGameState === _gameStates.gameStart ? startButton.textContent = 'Start' : startButton.textContent = 'Restart';
+    })
+
+    function onStartButtonClick(e) {
+        gameBoardModule.init();
+        displayModule.init(gameBoardModule.getGameBoard());
+        _currGameState = _gameStates.gameRunning;
+
+        pubSub.emit('gameStateChanged', _currGameState);
+    }
 
     function takeTurn(gameBoardIndex) {
-        if (_isGameOver) {
+        console.log(_currGameState)
+        if (_currGameState !== _gameStates.gameRunning) {
             return;
         }
         console.log(_currentPlayer);
@@ -124,12 +146,15 @@ const game = (() => {
             return;
         }
         gameBoardModule.setGameBoardItemAtIndex(gameBoardIndex, _currentPlayer.symbol);
+
         if (checkWinState()) {
             console.log(`Player ${_currentPlayer.getName()} wins!`)
-            _isGameOver = true;
+            _currGameState = _gameStates.gameOver;
+            pubSub.emit('gameStateChanged', _currGameState);
         }
         _currentPlayer === _player1 ? _currentPlayer = _player2 : _currentPlayer = _player1;
     }
+
 
     function checkWinState() {
         const _gameBoard = gameBoardModule.getGameBoard();
