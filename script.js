@@ -152,6 +152,12 @@ const game = (() => {
             _currGameState = _gameStates.gameOver;
             pubSub.emit('gameStateChanged', _currGameState);
         }
+
+        if (checkBoardIsFull(gameBoardModule.getGameBoard())) {
+            console.log("It's a draw!");
+            _currGameState = _gameStates.gameOver;
+            pubSub.emit('gameStateChanged', _currGameState);
+        }
         _currentPlayer === _player1 ? _currentPlayer = _player2 : _currentPlayer = _player1;
     }
 
@@ -205,6 +211,15 @@ const game = (() => {
             }
         }
         return false;
+    }
+
+    function checkBoardIsFull(_gameBoard) {
+        for (let item of _gameBoard) {
+            if (item === '') {
+                return false;
+            }
+        }
+        return true;
     }
     
     gameBoardModule.init();
