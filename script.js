@@ -123,7 +123,7 @@ const game = (() => {
     pubSub.subscribe('gameOver', (winner) => {
         const title = gameOverDisplay.querySelector('h2');
         if (winner) {
-            title.textContent = `${winner.getName()} wins!`
+            title.textContent = `${winner.getName() || 'Player ' + _currentPlayer.id} wins!`
         } else {
             title.textContent = "It's a draw!";
         }
